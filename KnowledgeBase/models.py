@@ -6,10 +6,10 @@ class Rule(models.Model):
     class Meta:
         db_table = "rules"
 
-    action = models.TextFiled()
-    condition = models.TextFiled()
+    action = models.TextField()
+    conditions = models.TextField()
     priority = models.IntegerField()
-    description = models.TextFiled()
+    description = models.TextField()
     rule_id = models.CharField(max_length = 512)
     ruleNamespace = models.CharField(max_length = 256)
 
