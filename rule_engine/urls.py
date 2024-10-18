@@ -20,5 +20,5 @@ from django.contrib import admin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('knowledge/base', include('KnowledgeBase.urls')),
+    path('knowledge/base/', include('KnowledgeBase.urls')),
 ]
