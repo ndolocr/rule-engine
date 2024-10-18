@@ -9,7 +9,7 @@ from KnowledgeBase.models import Rule
 # Create your views here.
 
 @api_view(['GET'])
-def getAllRules(request, namespace):
+def getAllRules(request):
     if request.method == "GET":
         try:
             rules = Rule.objects.all()
