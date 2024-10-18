@@ -9,7 +9,7 @@ from KnowledgeBase.models import Rule
 # Create your views here.
 
 @api_view(['GET'])
-def fineRuleByNamespace(request, namespace):
+def getRuleByNamespace(request, namespace):
     try:
         rules = Rule.objects.filter(ruleNamespace = namespace)
         rules_list = list(rules.values())
