@@ -20,5 +20,6 @@ from django.contrib import admin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('knowledge/base/', include('KnowledgeBase.urls')),
+    path('transaction/', include('restApi.urls')),
+    path('knowledge/base/', include('KnowledgeBase.urls')),    
 ]
