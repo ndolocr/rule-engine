@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Apps
+    'restApi',
     'KnowledgeBase',
 
     # Third Party Apps
