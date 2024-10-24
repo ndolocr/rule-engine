@@ -107,7 +107,7 @@ def get_transaction(request):
         print(f"source_channel ==> {source_channel}")
         print(f"transaction_type ==> {transaction_type}")
         print(f"transaction_time ==> {transaction_time}")
-
+        
         return JsonResponse(
             {
                 "responseObject": {
