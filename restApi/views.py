@@ -128,3 +128,52 @@ def get_transaction(request):
                 "statusCode": "99"
             }
         )
+
+@api_view(["POST"])
+def process_transaction(request):
+    if request.method == "POST":
+        cr_amount = request.data.get("cr_amount", "")
+        cr_channel = request.data.get("cr_channel", "")
+        cr_account = request.data.get("cr_account", "")
+        cr_currency = request.data.get("cr_currency", "")
+        cr_customerId = request.data.get("cr_customerId", "")
+        cr_customer_name = request.data.get("cr_customer_name", "")
+
+        dr_amount = request.data.get("dr_amount", "")
+        dr_channel = request.data.get("dr_channel", "")
+        dr_account = request.data.get("dr_account", "")
+        dr_currency = request.data.get("dr_currency", "")
+        dr_customer_id = request.data.get("dr_customer_id", "")
+        dr_customer_name = request.data.get("dr_customer_name", "")
+
+        country_code = request.data.get("country_code", "")
+        transaction_id = request.data.get("transaction_id", "")
+        transaction_date = request.data.get("transaction_date", "")
+        transaction_type = request.data.get("transaction_type", "")
+
+        print("================== RECEIVED DATA ==================")
+        print(" ---------------------------------------------- ")
+        print(f"transaction_date -->{transaction_date}")
+        print(f"transaction_id -->{transaction_id}")
+        print(f"transaction_type -->{transaction_type}")
+        print(f"country_code -->{country_code}")
+        # Source Details
+        print(f"dr_customer_id -->{dr_customer_id}")
+        print(f"dr_channel -->{dr_channel}")
+        print(f"dr_currency -->{dr_currency}")
+        print(f"dr_customer_name -->{dr_customer_name}")
+        print(f"dr_amount -->{dr_amount}")
+        print(f"dr_account -->{dr_account}")
+        # Destionation
+        print(f"cr_customerId -->{cr_customerId}")
+        print(f"cr_channel -->{cr_channel}")
+        print(f"cr_currency -->{cr_currency}")
+        print(f"cr_customer_name -->{cr_customer_name}")
+        print(f"cr_amount -->{cr_amount}")
+        print(f"cr_account -->{cr_account}")
+        print(" ---------------------------------------------- ")
+    return JsonResponse(
+        {
+            "message": "Success"
+        }
+    )
