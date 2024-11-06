@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import render
 from django.http import JsonResponse
 
@@ -132,6 +134,7 @@ def get_transaction(request):
 @api_view(["POST"])
 def process_transaction(request):
     if request.method == "POST":
+        
         cr_amount = request.data.get("cr_amount", "")
         cr_channel = request.data.get("cr_channel", "")
         cr_account = request.data.get("cr_account", "")
@@ -150,6 +153,27 @@ def process_transaction(request):
         transaction_id = request.data.get("transaction_id", "")
         transaction_date = request.data.get("transaction_date", "")
         transaction_type = request.data.get("transaction_type", "")
+        
+        data = {
+            "cr_amount": cr_amount,
+            "cr_channel": cr_channel,
+            "cr_account": cr_account,
+            "cr_currency": cr_currency,
+            "cr_customerId": cr_customerId,
+            "cr_customer_name": cr_customer_name,
+
+            "dr_amount": dr_amount,
+            "dr_channel": dr_channel,
+            "dr_account": dr_account,
+            "dr_currency": dr_currency,
+            "dr_customer_id": dr_customer_id,
+            "dr_customer_name": dr_customer_name,
+
+            "country_code": country_code,
+            "transaction_id": transaction_id,
+            "transaction_date": transaction_date,
+            "transaction_type": transaction_type
+        }
 
         print("================== RECEIVED DATA ==================")
         print(" ---------------------------------------------- ")
@@ -172,6 +196,9 @@ def process_transaction(request):
         print(f"cr_amount -->{cr_amount}")
         print(f"cr_account -->{cr_account}")
         print(" ---------------------------------------------- ")
+
+        json_data = json.loads(data)
+        
     return JsonResponse(
         {
             "message": "Success"
