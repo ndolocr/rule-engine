@@ -3,6 +3,9 @@ import json
 from django.shortcuts import render
 from django.http import JsonResponse
 
+from ruleEngine.views import RuleEngine
+from KnowledgeBase.views import getAllRulesByNamespace
+
 from rest_framework.decorators import api_view
 
 # Create your views here.
@@ -155,49 +158,73 @@ def process_transaction(request):
         transaction_type = request.data.get("transaction_type", "")
         
         data = {
-            "cr_amount": cr_amount,
-            "cr_channel": cr_channel,
-            "cr_account": cr_account,
-            "cr_currency": cr_currency,
-            "cr_customerId": cr_customerId,
-            "cr_customer_name": cr_customer_name,
-
-            "dr_amount": dr_amount,
-            "dr_channel": dr_channel,
-            "dr_account": dr_account,
-            "dr_currency": dr_currency,
-            "dr_customer_id": dr_customer_id,
-            "dr_customer_name": dr_customer_name,
-
-            "country_code": country_code,
-            "transaction_id": transaction_id,
-            "transaction_date": transaction_date,
-            "transaction_type": transaction_type
+            "input": {
+                "countryCode": country_code,
+                "transactionId": transaction_id,
+                "transactionDate": transaction_date,
+                "transactionType": transaction_type
+            },
+            "cr": {
+                "amount": cr_amount,
+                "channel": cr_channel,
+                "account": cr_account,
+                "currency": cr_currency,
+                "customerId": cr_customerId,
+                "customer_name": cr_customer_name,
+            },
+            "dr":{
+                "amount": dr_amount,
+                "channel": dr_channel,
+                "account": dr_account,
+                "currency": dr_currency,
+                "customer_id": dr_customer_id,
+                "customer_name": dr_customer_name,
+            }                        
         }
 
         print("================== RECEIVED DATA ==================")
         print(" ---------------------------------------------- ")
-        print(f"transaction_date -->{transaction_date}")
-        print(f"transaction_id -->{transaction_id}")
-        print(f"transaction_type -->{transaction_type}")
-        print(f"country_code -->{country_code}")
+        print("<=== INPUT ===>")
+        print(f"Transaction Date -->{transaction_date}")
+        print(f"Transaction ID -->{transaction_id}")
+        print(f"Transaction Type -->{transaction_type}")
+        print(f"Country Code -->{country_code}")
         # Source Details
-        print(f"dr_customer_id -->{dr_customer_id}")
-        print(f"dr_channel -->{dr_channel}")
-        print(f"dr_currency -->{dr_currency}")
-        print(f"dr_customer_name -->{dr_customer_name}")
-        print(f"dr_amount -->{dr_amount}")
-        print(f"dr_account -->{dr_account}")
+        print("<=== DR ===>")
+        print(f"Customer ID -->{dr_customer_id}")
+        print(f"Channel -->{dr_channel}")
+        print(f"Currency -->{dr_currency}")
+        print(f"Customer Name -->{dr_customer_name}")
+        print(f"Amount -->{dr_amount}")
+        print(f"Account -->{dr_account}")
         # Destionation
-        print(f"cr_customerId -->{cr_customerId}")
-        print(f"cr_channel -->{cr_channel}")
-        print(f"cr_currency -->{cr_currency}")
-        print(f"cr_customer_name -->{cr_customer_name}")
-        print(f"cr_amount -->{cr_amount}")
-        print(f"cr_account -->{cr_account}")
+        print("<=== DR ===>")
+        print(f"Customer ID -->{cr_customerId}")
+        print(f"Channel -->{cr_channel}")
+        print(f"Currency -->{cr_currency}")
+        print(f"Customer Name -->{cr_customer_name}")
+        print(f"Amount -->{cr_amount}")
+        print(f"Account -->{cr_account}")
         print(" ---------------------------------------------- ")
 
-        json_data = json.loads(data)
+        print("< ============ JSON Created ============ >")
+        print(f"Data ==> {data}")
+        print("< ============ END ============ >")
+        # json_data = json.loads(data)
+
+        namespace = "FRAUD"
+
+        rules_list = getAllRulesByNamespace(namespace)
+        list_of_rules = []
+        print("< ============ RULES LIST ============ >")        
+        for each_list in rules_list:
+            data = {}
+            data["action"] = each_list["action"]
+            data["conditions"] = each_list["conditions"]
+            list_of_rules.append(data)
+        print(f"List with rules: ==> {list_of_rules}")          
+        print("< ============ END ============ >")
+
         
     return JsonResponse(
         {
