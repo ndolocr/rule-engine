@@ -3,6 +3,7 @@ import json
 from django.shortcuts import render
 from django.http import JsonResponse
 
+from mvelParser.views import MVELParser
 from ruleEngine.views import RuleEngine
 from KnowledgeBase.views import getAllRulesByNamespace
 
@@ -213,17 +214,23 @@ def process_transaction(request):
         # json_data = json.loads(data)
 
         namespace = "FRAUD"
+        mvel_parser_obj = MVELParser()
 
         rules_list = getAllRulesByNamespace(namespace)
-        list_of_rules = []
-        print("< ============ RULES LIST ============ >")        
-        for each_list in rules_list:
-            data = {}
-            data["action"] = each_list["action"]
-            data["conditions"] = each_list["conditions"]
-            list_of_rules.append(data)
-        print(f"List with rules: ==> {list_of_rules}")          
-        print("< ============ END ============ >")
+        score = 0
+        for rule in rules_list:
+            recieved_score = mvel_parser_obj.parse_mvel_expression()
+            score += recieved_score
+
+        # list_of_rules = []
+        # print("< ============ RULES LIST ============ >")        
+        # for each_list in rules_list:
+        #     data = {}
+        #     data["action"] = each_list["action"]
+        #     data["conditions"] = each_list["conditions"]
+        #     list_of_rules.append(data)
+        # print(f"List with rules: ==> {list_of_rules}")          
+        # print("< ============ END ============ >")
 
         
     return JsonResponse(
