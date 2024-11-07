@@ -123,3 +123,12 @@ def getRuleByNamespace(request, namespace):
                     "statusMessage": "Fail"                        
                 }
             )
+
+def getAllRulesByNamespace(namespace):
+    try:
+        rules = Rule.objects.filter(ruleNamespace = namespace)
+        rules_list = list(rules.values())        
+        return rules_list
+    except Exception as e:
+        message = f"Unable to get rules because of the following error: --> {e}"
+        return [message]
