@@ -4,7 +4,6 @@ from django.shortcuts import render
 from django.http import JsonResponse
 
 from mvelParser.views import MVELParser
-from ruleEngine.views import RuleEngine
 from KnowledgeBase.views import getAllRulesByNamespace
 
 from rest_framework.decorators import api_view
@@ -163,24 +162,25 @@ def process_transaction(request):
                 "countryCode": country_code,
                 "transactionId": transaction_id,
                 "transactionDate": transaction_date,
-                "transactionType": transaction_type
-            },
-            "cr": {
-                "amount": cr_amount,
-                "channel": cr_channel,
-                "account": cr_account,
-                "currency": cr_currency,
-                "customerId": cr_customerId,
-                "customer_name": cr_customer_name,
-            },
-            "dr":{
-                "amount": dr_amount,
-                "channel": dr_channel,
-                "account": dr_account,
-                "currency": dr_currency,
-                "customer_id": dr_customer_id,
-                "customer_name": dr_customer_name,
-            }                        
+                "transactionType": transaction_type,
+
+                "cr": {
+                    "amount": cr_amount,
+                    "channel": cr_channel,
+                    "account": cr_account,
+                    "currency": cr_currency,
+                    "customerId": cr_customerId,
+                    "customer_name": cr_customer_name,
+                },
+                "dr":{
+                    "amount": dr_amount,
+                    "channel": dr_channel,
+                    "account": dr_account,
+                    "currency": dr_currency,
+                    "customer_id": dr_customer_id,
+                    "customer_name": dr_customer_name,
+                }                        
+            }
         }
 
         print("================== RECEIVED DATA ==================")
@@ -216,25 +216,17 @@ def process_transaction(request):
         namespace = "FRAUD"
         mvel_parser_obj = MVELParser()
 
-        rules_list = getAllRulesByNamespace(namespace)
-        score = 0
-        for rule in rules_list:
-            recieved_score = mvel_parser_obj.parse_mvel_expression()
-            score += recieved_score
-
-        # list_of_rules = []
-        # print("< ============ RULES LIST ============ >")        
-        # for each_list in rules_list:
-        #     data = {}
-        #     data["action"] = each_list["action"]
-        #     data["conditions"] = each_list["conditions"]
-        #     list_of_rules.append(data)
-        # print(f"List with rules: ==> {list_of_rules}")          
-        # print("< ============ END ============ >")
-
+        mvel_rules_list = getAllRulesByNamespace(namespace)
         
+        score = 0
+        print(f"Score Before Processing ==> {score}")
+        for rule in mvel_rules_list:
+            recieved_score = mvel_parser_obj.parse_mvel_expression(rule["action"], rule["conditions"], data)
+            score += recieved_score
+        print(f"Score AFTER Processing ==> {score}")
+
     return JsonResponse(
         {
-            "message": "Success"
+            "score": score
         }
     )
