@@ -276,27 +276,27 @@ def process_V2_transaction(request):
                 "transactionType": transactionType,
 
                 "cr": {
-                    "cr_amount": cr_amount,
-                    "cr_tran_id": cr_tran_id,
-                    "cr_channel": cr_channel,
-                    "cr_account": cr_account,
-                    "cr_currency": cr_currency,
-                    "cr_customer_name": cr_customer_name,
-                    "cr_store_of_value": cr_store_of_value,
-                    "cr_transaction_date": cr_transaction_date,
-                    "cr_transaction_type": cr_transaction_type,
+                    "amount": cr_amount,
+                    "tran_id": cr_tran_id,
+                    "channel": cr_channel,
+                    "account": cr_account,
+                    "currency": cr_currency,
+                    "customer_name": cr_customer_name,
+                    "store_of_value": cr_store_of_value,
+                    "transaction_date": cr_transaction_date,
+                    "transaction_type": cr_transaction_type,
                 },
 
                 "dr": {
-                    "dr_amount": dr_amount,
-                    "dr_tran_id": dr_tran_id,
-                    "dr_channel": dr_channel,
-                    "dr_account": dr_account,
-                    "dr_currency": dr_currency,
-                    "dr_customer_name": dr_customer_name,
-                    "dr_store_of_value": dr_store_of_value,
-                    "dr_transaction_date": dr_transaction_date,
-                    "dr_transaction_type": dr_transaction_type,
+                    "amount": dr_amount,
+                    "tran_id": dr_tran_id,
+                    "channel": dr_channel,
+                    "account": dr_account,
+                    "currency": dr_currency,
+                    "customer_name": dr_customer_name,
+                    "store_of_value": dr_store_of_value,
+                    "transaction_date": dr_transaction_date,
+                    "transaction_type": dr_transaction_type,
                 },
                 
                 "ip": ip,
@@ -313,12 +313,15 @@ def process_V2_transaction(request):
         remarks = ""
         print(f"Score Before Processing ==> {score}")
         for rule in mvel_rules_list:
-            recieved_score = mvel_parser_obj.parse_mvel_expression(rule["action"], rule["conditions"], data)
+            recieved_score = mvel_parser_obj.parse_mvel_expression(rule["action"], rule["conditions"], rule["description"], data)
+            if recieved_score > 0:
+                remarks +=f"{rule['description']} \n "
             score += recieved_score
         print(f"Score AFTER Processing ==> {score}")
-
+        print (f"Remarks --> {remarks}")
     return JsonResponse(
-        {
-            "score": score
+        {            
+            "score": score,
+            "remarks": remarks,
         }
     )
