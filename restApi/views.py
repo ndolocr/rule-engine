@@ -230,3 +230,8 @@ def process_transaction(request):
             "score": score
         }
     )
+
+@api_view(["POST"])
+def process_V2_transaction(request):
+    pass
+        
