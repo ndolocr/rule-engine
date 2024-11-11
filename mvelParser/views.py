@@ -27,7 +27,7 @@ class MVELParser:
 
         return expression
 
-    def parse_mvel_expression(self, action, conditions, input_objects):
+    def parse_mvel_expression(self, action, conditions, description, input_objects):
         """
         Parses and evaluates an expression using the provided input objects.
         
