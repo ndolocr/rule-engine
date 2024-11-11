@@ -233,5 +233,6 @@ def process_transaction(request):
 
 @api_view(["POST"])
 def process_V2_transaction(request):
-    pass
+    if request.method == "POST":
+        pass
         
