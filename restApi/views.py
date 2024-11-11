@@ -313,7 +313,7 @@ def process_V2_transaction(request):
         remarks = ""
         print(f"Score Before Processing ==> {score}")
         for rule in mvel_rules_list:
-            recieved_score = mvel_parser_obj.parse_mvel_expression(rule["action"], rule["conditions"], rule["description"], data)
+            recieved_score = mvel_parser_obj.parse_mvel_expression(rule["action"], rule["conditions"], data)
             if recieved_score > 0:
                 remarks +=f"{rule['description']} \n "
             score += recieved_score
