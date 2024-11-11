@@ -234,5 +234,90 @@ def process_transaction(request):
 @api_view(["POST"])
 def process_V2_transaction(request):
     if request.method == "POST":
-        pass
+
+        bankId = request.data.get("bankId", "")
+        requestId = request.data.get("requestId", "")
+        customerId = request.data.get("customerId", "")
+        sourceChannel = request.data.get("sourceChannel", "")
+        transactionTime = request.data.get("transactionTime", "")
+        transactionType = request.data.get("transactionType", "")
+
+        cr_amount = request.data.get("cr_amount", "")
+        cr_tran_id = request.data.get("cr_tran_id", "")
+        cr_channel = request.data.get("cr_channel", "")
+        cr_account = request.data.get("cr_account", "")
+        cr_currency = request.data.get("cr_currency", "")
+        cr_customer_name = request.data.get("cr_customer_name", "")
+        cr_store_of_value = request.data.get("cr_store_of_value", "")
+        cr_transaction_date = request.data.get("cr_transaction_date", "")
+        cr_transaction_type = request.data.get("cr_transaction_type", "")
+
+        dr_amount = request.data.get("dr_amount", "")
+        dr_tran_id = request.data.get("dr_tran_id", "")
+        dr_channel = request.data.get("dr_channel", "")
+        dr_account = request.data.get("dr_account", "")
+        dr_currency = request.data.get("dr_currency", "")
+        dr_customer_name = request.data.get("dr_customer_name", "")
+        dr_store_of_value = request.data.get("dr_store_of_value", "")
+        dr_transaction_date = request.data.get("dr_transaction_date", "")
+        dr_transaction_type = request.data.get("dr_transaction_type", "")
+
+        ip = request.data.get("ip", "")
+        country = request.data.get("country", "")
+
+        data = {
+            "input": {
+                                
+                "bankId": bankId,
+                "requestId": requestId,
+                "customerId": customerId,
+                "sourceChannel": sourceChannel,
+                "transactionTime": transactionTime,
+                "transactionType": transactionType,
+
+                "cr": {
+                    "cr_amount": cr_amount,
+                    "cr_tran_id": cr_tran_id,
+                    "cr_channel": cr_channel,
+                    "cr_account": cr_account,
+                    "cr_currency": cr_currency,
+                    "cr_customer_name": cr_customer_name,
+                    "cr_store_of_value": cr_store_of_value,
+                    "cr_transaction_date": cr_transaction_date,
+                    "cr_transaction_type": cr_transaction_type,
+                },
+
+                "dr": {
+                    "dr_amount": dr_amount,
+                    "dr_tran_id": dr_tran_id,
+                    "dr_channel": dr_channel,
+                    "dr_account": dr_account,
+                    "dr_currency": dr_currency,
+                    "dr_customer_name": dr_customer_name,
+                    "dr_store_of_value": dr_store_of_value,
+                    "dr_transaction_date": dr_transaction_date,
+                    "dr_transaction_type": dr_transaction_type,
+                },
+                
+                "ip": ip,
+                "country": country,
+            }
+        }
+
+        namespace = "FRAUD"
+        mvel_parser_obj = MVELParser()
         
+        mvel_rules_list = getAllRulesByNamespace(namespace)
+        
+        score = 0
+        print(f"Score Before Processing ==> {score}")
+        for rule in mvel_rules_list:
+            recieved_score = mvel_parser_obj.parse_mvel_expression(rule["action"], rule["conditions"], data)
+            score += recieved_score
+        print(f"Score AFTER Processing ==> {score}")
+
+    return JsonResponse(
+        {
+            "score": score
+        }
+    )
