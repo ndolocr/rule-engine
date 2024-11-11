@@ -310,6 +310,7 @@ def process_V2_transaction(request):
         mvel_rules_list = getAllRulesByNamespace(namespace)
         
         score = 0
+        remarks = ""
         print(f"Score Before Processing ==> {score}")
         for rule in mvel_rules_list:
             recieved_score = mvel_parser_obj.parse_mvel_expression(rule["action"], rule["conditions"], data)
