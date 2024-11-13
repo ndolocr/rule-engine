@@ -1,5 +1,7 @@
 import json
+import requests
 
+from django.conf import settings
 from django.shortcuts import render
 from django.http import JsonResponse
 
@@ -303,12 +305,30 @@ def process_V2_transaction(request):
                 "country": country,
             }
         }
-
-        namespace = "FRAUD"
+        
         mvel_parser_obj = MVELParser()
         
-        mvel_rules_list = getAllRulesByNamespace(namespace)
+        # mvel_rules_list = getAllRulesByNamespace(namespace)
+        # Get Rules using api call
         
+        mvel_rules_list = []      
+        try:
+            namespace = "FRAUD"
+            url = settings.KNOWLEDGE_BASE_ALL_RULES_URL
+            headers = {"Content-Type": "application/json"}
+            response = requests.get(url, headers=headers, json={"namespace": namespace})
+            json_response = response.json()
+            print(f"JSON RESPONSE ==> {json_response}")
+            rules_list = json_response["responseObject"]["data"]
+            mvel_rules_list += rules_list
+        except Exception as e:
+            message = f"Error on getting rules --> {e}"
+            return JsonResponse({"message": message})
+        
+        print("========================================")
+        print(f"-------------- Rules List -------------")
+        print(f"{mvel_rules_list}")
+        print("========================================")
         score = 0
         remarks = ""
         print(f"Score Before Processing ==> {score}")
@@ -319,9 +339,4 @@ def process_V2_transaction(request):
             score += recieved_score
         print(f"Score AFTER Processing ==> {score}")
         print (f"Remarks --> {remarks}")
-    return JsonResponse(
-        {            
-            "score": score,
-            "remarks": remarks,
-        }
-    )
+    return JsonResponse({"score": score, "remarks": remarks,})
